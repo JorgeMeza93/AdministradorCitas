@@ -37,6 +37,9 @@ class Citas{
     agregarCita(cita){
         this.citas = [...this.citas, cita];
     }
+    quitarCita(id){
+        this.citas = this.citas.filter( cita => cita.id !== id);
+    }
 }
 
 class UI{
@@ -52,6 +55,7 @@ class UI{
     }
 
     imprimirCitas(citasA){
+        this.limpiarHTML();
         const { citas } = citasA;
         citas.forEach( (cita) =>{
             const { mascota, propietario, telefono, fecha, hora, sintomas, id} = cita;
@@ -69,8 +73,43 @@ class UI{
                 <span class="font-weight-bolder">Propietario:</span> ${propietario}`;
             divCita.appendChild(propietarioParrafo);
 
+            const telefonoParrafo = document.createElement("p");
+            telefonoParrafo.innerHTML = `
+                <span class="font-weight-bolder">Teléfono:</span> ${telefono}`; 
+            divCita.appendChild(telefonoParrafo);
+
+            const fechaParrafo = document.createElement("p");
+            fechaParrafo.innerHTML = `
+                <span class="font-weight-bolden">Fecha: </span> ${fecha}`;
+            divCita.appendChild(fechaParrafo);
+
+            const horaParrafo = document.createElement("p");
+            horaParrafo.innerHTML = `
+                <span class="font-weight-bolden">Hora: </span> ${hora}`;
+            divCita.appendChild(horaParrafo);
+
+            const sintomasParrafo = document.createElement("p");
+            sintomasParrafo.innerHTML = `
+                <span class="font-weight-bolden">Síntomas: </span> ${sintomas}`;
+            divCita.appendChild(sintomasParrafo);
+            
+            const btnEliminar = document.createElement("button");
+            btnEliminar.classList.add("btn", "btn-danger", "mt-2")
+            btnEliminar.innerHTML = `Eliminar <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>`;
+            divCita.appendChild(btnEliminar);
+            //Funcionalidad 
+            btnEliminar.onclick = () => eliminarCita(id)
+
             contenedorCitas.appendChild(divCita);
         });
+    }
+
+    limpiarHTML(){
+        while(contenedorCitas.firstChild){
+            contenedorCitas.removeChild(contenedorCitas.firstChild);
+        }
     }
 
 }
@@ -107,4 +146,12 @@ function resetObjeto(){
     citaObj.fecha = "";
     citaObj.hora = "";
     citaObj.sintomas = "";
+}
+function eliminarCita(id){
+    // Llamar metodo eliminar citas de Administrar Citas
+    administrarCitas.quitarCita(id);
+    // Mostrar un mensaje
+    ui.imprimirAlerta("Cita eliminada correctamente");
+    // Mostrar la lista actualizada de citas
+    ui.imprimirCitas(administrarCitas)
 }
